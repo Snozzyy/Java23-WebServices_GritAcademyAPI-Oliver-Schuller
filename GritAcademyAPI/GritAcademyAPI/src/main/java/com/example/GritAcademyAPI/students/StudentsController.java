@@ -15,8 +15,8 @@ public class StudentsController {
     StudentsService studentsService;
 
     @GetMapping(value = "/students", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<Students>> getStudents(){
-        List<Students> students = studentsService.getStudents();
+    ResponseEntity<List<StudentsDTO>> getStudents(){
+        List<StudentsDTO> students = studentsService.getStudents();
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
 }

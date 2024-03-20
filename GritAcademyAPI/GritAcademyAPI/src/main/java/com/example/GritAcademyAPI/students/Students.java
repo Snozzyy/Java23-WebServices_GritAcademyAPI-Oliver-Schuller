@@ -23,10 +23,10 @@ public class Students {
     private Long id;
 
     @Column(name = "fname")
-    private String name;
+    private String fname;
 
     @Column(name = "lname")
-    private String description;
+    private String lname;
 
     @Column(name = "town")
     private String town;
