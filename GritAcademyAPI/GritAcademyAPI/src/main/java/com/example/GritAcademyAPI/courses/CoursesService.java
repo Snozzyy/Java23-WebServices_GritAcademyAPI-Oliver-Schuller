@@ -5,6 +5,7 @@ import com.example.GritAcademyAPI.students.StudentsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class CoursesService {
         return coursesRepository.findAll().stream().map(this::coursesMapToDTO).collect(Collectors.toList());
     }
     public List<CoursesDTO> findById(Long id) {
-        Optional<Courses> course = coursesRepository.findById(Math.toIntExact(id));
+        Optional<Courses> course = coursesRepository.findById(Math.toIntExact(id)); // Long not allowed for some reason, convert to Int
         return course.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
@@ -37,6 +38,22 @@ public class CoursesService {
         List<Courses> courses = coursesRepository.findByDescriptionContaining(keyword);
         return courses.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
+
+    public Courses saveCourse(String name, String description) {
+        Courses course = new Courses();
+        course.setName(name);
+        course.setDescription(description);
+
+        return coursesRepository.save(course);
+    }
+
+    public HashMap<String, String> deleteById(Long id) {
+        coursesRepository.deleteById(Math.toIntExact(id));
+        HashMap<String, String> message = new HashMap<>();
+        message.put("Message", "Course with ID " + id + " deleted");
+        return message;
+    }
+
 
     // DTO shows information about course and students assigned
     private CoursesDTO mapToDTO(Courses courses){

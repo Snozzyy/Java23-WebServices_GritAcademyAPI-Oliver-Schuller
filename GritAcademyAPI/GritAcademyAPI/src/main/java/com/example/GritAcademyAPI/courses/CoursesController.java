@@ -1,17 +1,14 @@
 package com.example.GritAcademyAPI.courses;
 
 import com.example.GritAcademyAPI.ApiError;
+import com.example.GritAcademyAPI.students.Students;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class CoursesController {
@@ -29,7 +26,7 @@ public class CoursesController {
         List<CoursesDTO> course = coursesService.findById(id);
         // If response is empty return error message
         if (course.isEmpty()) {
-            return new ResponseEntity<>(ApiError.noIdFound(id), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(ApiError.courseIdNotFound(id), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(course, HttpStatus.OK);
     }
@@ -39,7 +36,7 @@ public class CoursesController {
         List<CoursesDTO> course = coursesService.findByName(name);
         // If response is empty return error message
         if (course.isEmpty()) {
-            return new ResponseEntity<>(ApiError.noNameFound(name), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(ApiError.courseNameNotFound(name), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(course, HttpStatus.OK);
     }
@@ -49,7 +46,7 @@ public class CoursesController {
         List<CoursesDTO> course = coursesService.findByNameContaining(word);
         // If response is empty return error message
         if (course.isEmpty()) {
-            return new ResponseEntity<>(ApiError.noKeywordFound(word), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(ApiError.keywordNotFound(word), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(course, HttpStatus.OK);
     }
@@ -59,8 +56,23 @@ public class CoursesController {
         List<CoursesDTO> course = coursesService.findByDescriptionContaining(word);
         // If response is empty return error message
         if (course.isEmpty()) {
-            return new ResponseEntity<>(ApiError.noKeywordFound(word), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(ApiError.keywordNotFound(word), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(course, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/create/course")
+    public ResponseEntity<Object> saveCourse(
+            @RequestParam(value = "name") String name,
+            @RequestParam(value = "description", required = false) String description
+    ) {
+
+        Courses course = coursesService.saveCourse(name, description);
+        return new ResponseEntity<>(course, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(value = "/delete/course/{id}")
+    public ResponseEntity<Object> deleteCourse(@PathVariable(value = "id") Long id) {
+        return new ResponseEntity<>(coursesService.deleteById(id), HttpStatus.OK);
     }
 }
